@@ -1,107 +1,82 @@
 # Ollama-GPU-on-Windows-using-Docker
 
-This guide explains how to run Ollama with GPU support inside Docker on Windows and how to install and use AI models inside the container.
+This guide explains how to run **Ollama with GPU support inside Docker on Windows**, install AI models, and execute them through the container.
 
 ---
 
-## 1. Pull Ollama Docker Image
+## ✔ Prerequisites
+Before starting, ensure that the following are installed and working:
+- Windows 10 / 11
+- Docker Desktop with WSL2 backend enabled
+- NVIDIA GPU + CUDA drivers
+- NVIDIA Container Toolkit (Docker automatically detects GPU)
 
-```sh
+---
+
+## 🔹 1. Pull Ollama Docker Image
+```bash
 docker pull ollama/ollama:latest
-2. Start the Ollama Container with GPU
-sh
+🔹 2. Start Ollama Container with GPU
+bash
 Copy code
 docker run -d --name ollama-gpu ^
   --gpus=all ^
   -v ollama-data:/root/.ollama ^
   -p 11434:11434 ^
   ollama/ollama:latest
-This will start Ollama and make the API available on:
+If started successfully, the API will be available at:
 
 arduino
 Copy code
 http://localhost:11434
-3. Enter the running container
-sh
+🔹 3. Enter the Running Container
+bash
 Copy code
 docker exec -it ollama-gpu bash
-4. Pull a model inside the container
-Replace <model> with the model name you want (examples: deepseek-r1, llama3, mistral, qwen2.5)
+🔹 4. Pull an AI Model
+Replace <model> with the model you want (e.g., deepseek-r1, mistral, llama3).
 
-sh
+bash
 Copy code
 ollama pull <model>
 Example:
 
-sh
+bash
 Copy code
 ollama pull deepseek-r1
-5. Check installed models
-sh
+🔹 5. Check Installed Models
+bash
 Copy code
 ollama list
-6. Run a model
-sh
+🔹 6. Run a Model
+bash
 Copy code
 ollama run <model>
 Example:
 
-sh
+bash
 Copy code
 ollama run deepseek-r1
-7. Test using curl from Windows (outside the container)
-sh
-Copy code
-curl http://localhost:11434/api/generate -d "{
-  \"model\": \"deepseek-r1\",
-  \"prompt\": \"Hello, how are you?\"
-}"
-8. Stop / Start the container
-Stop:
-
-sh
-Copy code
-docker stop ollama-gpu
-Start again:
-
-sh
-Copy code
-docker start ollama-gpu
-Data is preserved automatically because of the Docker volume:
+🔹 7. Stop or Remove the Container (Optional)
+Stop container:
 
 bash
 Copy code
--v ollama-data:/root/.ollama
-Notes
-Component	Status
-GPU	enabled via --gpus=all
-Model storage	persistent using Docker volume
-API	exposed on port 11434
+docker stop ollama-gpu
+Start container again:
 
-Useful Commands Summary
-Task	Command
-Enter container	docker exec -it ollama-gpu bash
-List models	ollama list
-Pull model	ollama pull <model>
-Run model	ollama run <model>
-
-Example of multiple models installation
-sh
+bash
 Copy code
-ollama pull deepseek-r1
-ollama pull llama3
-ollama pull mistral
-You're done — Ollama with GPU is running on Windows inside Docker. 🚀
+docker start ollama-gpu
+Remove container:
 
-yaml
+bash
 Copy code
+docker rm -f ollama-gpu
+📌 Notes
+Models are stored persistently in the Docker volume ollama-data.
 
----
+GPU must be detected by Docker — run docker info and verify NVIDIA is listed.
 
-If you want, I can also create:
-
-🔹 `docker-compose.yml` version  
-🔹 README with screenshots  
-🔹 a **script that auto-installs models on first run**
-
-Just tell me. 💪
+🎉 Done!
+You now have Ollama with GPU running on Windows via Docker and can install/run any AI model inside the container.
